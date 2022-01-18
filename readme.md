@@ -7,16 +7,18 @@
 - Clase 5: [Map Reloaded](#Map-Reloaded)
 - Clase 6: [Filter](#Filter)
 - Clase 7: [Reduce](#Reduce)
-- Clase 8: [](#)
-- Clase 9: [](#)
-- Clase 10: [](#)
-- Clase 11: [](#)
-- Clase 12: [](#)
-- Clase 13: [](#)
-- Clase 14: [](#)
-- Clase 15: [](#)
-- Clase 16: [](#)
+- Clase 8: [Reduce Reloaded](#Reduce-Reloaded)
+- Clase 9: [Some](#Some)
+- Clase 10: [Every](#Every)
+- Clase 11: [Find y FindIndex](#Find_y_FindIndex)
+- Clase 12: [Includes](#Includes)
+- Clase 13: [Join](#Join)
+- Clase 14: [Concat](#Concat)
+- Clase 15: [Flat](#Flat)
+- Clase 16: [FlatMap](#FlatMap)
 - Clase 17: [](#)
+- Clase 18: [](#)
+- Clase 19: [](#)
 
 # Tu AS bajo la manga
 
@@ -24,7 +26,7 @@ Preparamos entorno de trabajo.
 
 > Links:
 >
-> Slides del curso [aqui]()
+> - Slides del curso [aqui]()
 
 # ForEach
 
@@ -122,7 +124,7 @@ let person2 = { ...person };
 
 > Links:
 >
-> [Estructuras de datos inmutables](https://platzi.com/tutoriales/1642-javascript-profesional/4559-estructuras-de-datos-inmutables/)
+> - [Estructuras de datos inmutables](https://platzi.com/tutoriales/1642-javascript-profesional/4559-estructuras-de-datos-inmutables/)
 
 # Map
 
@@ -349,7 +351,7 @@ console.log(search("hsdjkfhdsj"));
 
 > Links:
 >
-> [Lectura recomendada: filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+> - [Lectura recomendada: filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
 
 # Reduce
 
@@ -374,17 +376,504 @@ console.log(rta);
 Así funciona la iteración del reduce() por dentro:
 
 ```cmd
-i: iteration
+(i): iteration
 S: Sum
 I: Item
 R: Return
 
-i | S | I | R
-1 | 0 | 1 | 1
-2 | 1 | 2 | 3
-3 | 3 | 3 | 6
-4 | 6 | 4 | 10
+(i) | S | I | R
+(1) | 0 | 1 | return: 1
+(2) | 1 | 2 | return: 3
+(3) | 3 | 3 | return: 6
+(4) | 6 | 4 | return: 10
 ```
+
+## Ejemplo Clase:
+
+```javascript
+const totals = [1, 2, 3, 4];
+
+// For
+let sum = 0;
+for (let index = 0; index < totals.length; index++) {
+  const element = totals[index];
+  sum = sum + element;
+}
+console.log("sum:", sum); // return sum: 10
+
+// Reduce
+// 1 parametro: arrow function.
+// - 1 parametro: acumulador
+// - 2 parametro: item que estamos iterando
+// 2 parametro: estado inicial
+const rta = totals.reduce((sum, element) => sum + element, 0);
+console.log("rta:", rta); // return rta: 10
+```
+
+> Links
+>
+> [Lectura recomendada: reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
+
+# Reduce Reloaded
+
+## Ejemplo Clase:
+
+```javascript
+const items = [1, 3, 2, 3];
+
+const rta = items.reduce((obj, item) => {
+  if (!obj[item]) {
+    obj[item] = 1;
+  } else {
+    obj[item] = obj[item] + 1;
+  }
+  return obj;
+}, {});
+
+console.log("rta: ", rta);
+// return: rta:  { '1': 1, '2': 1, '3': 2 }
+
+const data = [
+  {
+    name: "Nicolas",
+    level: "low",
+  },
+  {
+    name: "Andrea",
+    level: "medium",
+  },
+  {
+    name: "Zulema",
+    level: "hight",
+  },
+  {
+    name: "Santiago",
+    level: "low",
+  },
+  {
+    name: "Valentina",
+    level: "medium",
+  },
+  {
+    name: "Lucia",
+    level: "hight",
+  },
+];
+
+const rta1 = data
+  .map((item) => item.level)
+  .reduce((obj, item) => {
+    if (!obj[item]) {
+      obj[item] = 1;
+    } else {
+      obj[item] = obj[item] + 1;
+    }
+    return obj;
+  }, {});
+
+console.log("rta1: ", rta1);
+// return: rta1: { low: 2, medium: 2, hight: 2 }
+```
+
+# Some
+
+Este método nos devuelve **true** o **false** **sí al menos 1 elemento** de nuestro array cumple con la condición.
+
+## Ejemplo Clase:
+
+```javascript
+const numbers = [1, 2, 3, 4];
+
+let rta = false;
+for (let index = 0; index < numbers.length; index++) {
+  const element = numbers[index];
+  if (element % 2 === 0) {
+    rta = true;
+    break;
+  }
+}
+console.log("rta:", rta);
+// return rta: true
+
+const rta2 = numbers.some((item) => item % 2 === 0);
+console.log("rta2:", rta2);
+// return: rta2: true
+
+const orders = [
+  {
+    customerName: "Nicolas",
+    total: 60,
+    delivered: true,
+  },
+  {
+    customerName: "Zulema",
+    total: 120,
+    delivered: false,
+  },
+  {
+    customerName: "Santiago",
+    total: 180,
+    delivered: true,
+  },
+  {
+    customerName: "Valentina",
+    total: 240,
+    delivered: true,
+  },
+  {
+    customerName: "Nicolas",
+    total: 2322,
+    delivered: false,
+  },
+];
+
+const rta3 = orders.some((item) => item.delivered);
+console.log("rta3:", rta3);
+// return: rta3: true
+
+const dates = [
+  {
+    startDate: new Date(2021, 1, 1, 10),
+    endDate: new Date(2021, 1, 1, 11),
+    title: "Cita de trabajo",
+  },
+  {
+    startDate: new Date(2021, 1, 1, 15),
+    endDate: new Date(2021, 1, 1, 15, 30),
+    title: "Cita con mi jefe",
+  },
+  {
+    startDate: new Date(2021, 1, 1, 20),
+    endDate: new Date(2021, 1, 1, 21),
+    title: "Cena",
+  },
+];
+
+const newAppointment = {
+  startDate: new Date(2021, 1, 1, 8),
+  endDate: new Date(2021, 1, 1, 9, 30),
+};
+
+const areIntervalsOverlapping = require("date-fns/areIntervalsOverlapping");
+
+const isOverlap = (newDate) => {
+  return dates.some((date) => {
+    return areIntervalsOverlapping(
+      { start: date.startDate, end: date.endDate },
+      { start: newDate.startDate, end: newDate.endDate }
+    );
+  });
+};
+
+console.log("isOverlap:", isOverlap(newAppointment));
+// return: isOverlap: false
+```
+
+> Links:
+>
+> - [Lectura recomendada: some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
+
+# Every
+
+Este método es el contrario a **_some()_**, devuelve true o false sí **TODOS** los elementos del array cumplen la condición.
+
+## Ejemplo Clase:
+
+```javascript
+const numbers = [1, 30, 39, 29, 10, 13];
+
+// For
+let rta = true;
+for (let index = 0; index < numbers.length; index++) {
+  const element = numbers[index];
+  if (element >= 40) {
+    rta = false;
+  }
+}
+console.log("for:", rta);
+// return: for: true
+
+// Every
+const rta2 = numbers.every((item) => item <= 40);
+console.log("every:", rta2);
+// return: every: true
+```
+
+> Links:
+>
+> - [Lectura recomendada: every](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
+
+# Find y FindIndex
+
+El método **find()** devuelve el **primer elemento** del array que cumpla con la condición dada o no devuelve undefined si es que no encuentra ningún elemento que cumpla los requisitos pedidos. A diferencia de filter() que retornaba un array find() retorna el elemento.
+
+```javascript
+const array1 = [5, 12, 8, 130, 44];
+const found = array1.find((element) => element > 10);
+console.log(found);
+// expected output: 12
+```
+
+En cambio el método **findIndex()** es una variante que te devuelve el **index o posición** donde esta ese primer elemento que encuentra con las características de la condición dada. **De no encontrar ninguno devuelve -1** como respuesta del return del método.
+
+```javascript
+const array1 = [5, 12, 8, 130, 44];
+const isLargeNumber = (element) => element > 13;
+console.log(array1.findIndex(isLargeNumber));
+// expected output: 3
+```
+
+## Ejemplo Clase:
+
+```javascript
+const numbers = [1, 30, 49, 29, 10, 13];
+
+// For
+let rta = undefined;
+for (let index = 0; index < numbers.length; index++) {
+  const element = numbers[index];
+  if (element === 302323) {
+    rta = element;
+    break;
+  }
+}
+console.log("for:", rta);
+// return: for: undefined
+
+const rta2 = numbers.find((item) => item === 302323);
+console.log("find:", rta2);
+// return: find: undefined
+
+const products = [
+  {
+    name: "Pizza",
+    price: 12,
+    id: "🍕",
+  },
+  {
+    name: "Burger",
+    price: 23,
+    id: "🍔",
+  },
+  {
+    name: "Hot dog",
+    price: 34,
+    id: "🌭",
+  },
+  {
+    name: "Hot cakes",
+    price: 355,
+    id: "🥞",
+  },
+];
+
+const rta3 = products.find((item) => item.id === "🍔");
+console.log("find", rta3);
+// return: find: { name: 'Burger', price: 23, id: '🍔' }
+
+const rta4 = products.findIndex((item) => item.id === "🍔");
+console.log("findIndex", rta4);
+// return: findIndex: 1
+```
+
+> Links:
+>
+> - [Lectura recomendada: find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+> - [Lectura recomendada: findIndex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
+
+# Includes
+
+El método **includes()** determina si una array incluye un determinado elemento, devuelve true o false según corresponda.
+
+```javascript
+const array1 = [1, 2, 3];
+console.log(array1.includes(2));
+// expected output: true
+const pets = ["cat", "dog", "bat"];
+console.log(pets.includes("cat"));
+// expected output: true
+console.log(pets.includes("at"));
+// expected output: false
+```
+
+También posee un segundo parámetro que es el fromIndex, que es la posición donde comenzar a buscar el valor en el array.
+
+```javascript
+[1, 2, 3].includes(2); // true
+[1, 2, 3].includes(4); // false
+[1, 2, 3].includes(3, 3); // false
+[1, 2, 3].includes(3, -1); // true
+[1, 2, NaN].includes(NaN); // true
+```
+
+Este **fromIndex** sí es igual o mayor que el tamaño del array, devuelve false automaticamente sin buscar en el vector. Sí el fromIndex es negativo busca en todo el array. Y para los casos 0, -0, +0 lo toma como cero y también lee todo el array.
+
+## Ejemplo Clase:
+
+```javascript
+const pets = ["cat", "dog", "bat"];
+
+// For
+let includeInArray = false;
+for (let index = 0; index < pets.length; index++) {
+  const element = pets[index];
+  if (element === "dog") {
+    includeInArray = true;
+    break;
+  }
+}
+console.log("for:", includeInArray);
+// return: for: true
+
+// Includes
+const rta = pets.includes("dog");
+console.log("includes", rta);
+// return: includes: true
+```
+
+> Links:
+>
+> - [Lectura recomendada: includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
+
+# Join
+
+El método **join()** une todos los elementos de un array en una cadena y devuelve esta cadena. Podemos pasarle cualquier elemento como separador que deseemos.
+
+```javascript
+const elements = ["Fire", "Air", "Water"];
+console.log(elements.join());
+// expected output "Fire,Air,Water"
+console.log(elements.join(""));
+// expected output "FireAirWater"
+console.log(elements.join("-"));
+// expected output "Fire-Air-Water"
+```
+
+Y el método **split()** divide un objeto de tipo String en un array de cadenas mediante la separación de la cadena en sub-cadenas
+
+## Ejemplo Clase:
+
+```javascript
+const elements = ["Fire", "Air", "Water"];
+
+// For
+let rtaFinal = "";
+const separator = "--";
+for (let index = 0; index < elements.length; index++) {
+  const element = elements[index];
+  rtaFinal = rtaFinal + element + separator;
+}
+console.log("for", rtaFinal);
+// return: for Fire--Air--Water--
+
+// Join
+const rta = elements.join("--");
+console.log("join", rta);
+// return: join Fire--Air--Water
+
+const title = "Curso de manipulación de arrays";
+
+// join & slpit
+const urlFinal = title.split(" ").join("-").toLowerCase();
+console.log("urlFinal", urlFinal);
+// return: urlFinal curso-de-manipulación-de-arrays
+```
+
+> Links:
+>
+> - [Lectura recomendada: join](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
+> - [Lectura recomendada: split](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+
+# Concat
+
+Metodo que combina dos arrays en uno. Concat en inmutable, por lo que no modifica al array original.
+
+Recordar que al ser inmutable, los arrays (tanto el nuevo como el viejo) quedaran referenciados por memoria, por lo tanto sí modificamos alguno de los dos, los cambios se verán reflejados en ambos.
+
+```javascript
+const array1 = ["a", "b", "c"];
+const array2 = ["d", "e", "f"];
+const array3 = array1.concat(array2);
+
+console.log(array3);
+// expected output: Array ["a", "b", "c", "d", "e", "f"]
+```
+
+## Ejemplo Clase:
+
+```javascript
+const elements = [1, 1, 2, 2];
+const othersElements = [3, 3, 4, 4];
+
+// For
+// const newArray = elements; -> Queda la referencia en memoria, por lo que elements tambien se modifica
+const newArray = [...elements]; // -> usamos spread operator para soluciona la ref. en momoria.
+for (let index = 0; index < othersElements.length; index++) {
+  const element = othersElements[index];
+  newArray.push(element);
+}
+console.log("for", newArray);
+// return: for [1, 1, 2, 2, 3, 3, 4, 4]
+
+// Concat
+const rta = elements.concat(othersElements);
+console.log("concat", rta);
+// return: concat [1, 1, 2, 2, 3, 3, 4, 4]
+
+// Spread Operator
+const rta2 = [...elements, ...othersElements];
+console.log("rta2", rta2);
+// return: rta2 [1, 1, 2, 2, 3, 3, 4, 4]
+
+const rta3 = [...elements, ..."random"];
+console.log("rta3", rta3);
+// return: rta3 [1, 1, 2, 2, 'r', 'a', 'n', 'd', 'o', 'm']
+
+// Push
+elements.push(...othersElements);
+console.log("elements", elements);
+// return: elements [1, 1, 2, 2, 3, 3, 4, 4]
+```
+
+> Links:
+>
+> - [Lectura recomendada: concat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)
+> - [Lectura recomendada: sintaxis spread](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+
+# Flat
+
+## Ejemplo Clase:
+
+```javascript
+const matriz = [
+  [1, 2, 3],
+  [4, 5, 6, [1, 2, [1, 2]]],
+  [7, 8, 9],
+];
+
+// For
+const newArray = [];
+for (let i = 0; i < matriz.length; i++) {
+  const array = matriz[i];
+  for (let j = 0; j < array.length; j++) {
+    const element = matriz[i][j];
+    newArray.push(element);
+  }
+}
+console.log("for", newArray);
+// return: for [ 1, 2, 3, 4, 5, 6, [ 1, 2, [ 1, 2 ] ], 7, 8, 9 ]
+
+// Flat
+const rta = matriz.flat(3);
+console.log("flat", rta);
+// return: flat [ 1, 2, 3, 4, 5, 6, 1, 2, 1, 2, 7, 8, 9]
+```
+
+> Links:
+>
+> - [Lectura recomendada: flat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)
+
+# FlatMap
 
 ## Ejemplo Clase:
 
@@ -392,6 +881,6 @@ i | S | I | R
 
 ```
 
-> Links
+> Links:
 >
-> [Lectura recomendada: reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
+> - [Lectura recomendada: flatmap]()
