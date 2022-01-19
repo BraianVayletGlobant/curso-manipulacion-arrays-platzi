@@ -16,9 +16,8 @@
 - Clase 14: [Concat](#Concat)
 - Clase 15: [Flat](#Flat)
 - Clase 16: [FlatMap](#FlatMap)
-- Clase 17: [](#)
-- Clase 18: [](#)
-- Clase 19: [](#)
+- Clase 17: [Mutable functions](#Mutable-functions)
+- Clase 18: [Sort](#Sort)
 
 # Tu AS bajo la manga
 
@@ -875,12 +874,225 @@ console.log("flat", rta);
 
 # FlatMap
 
+**flatMap()** realiza un map y luego el flat. Tiene como limitacion 1 solo nivel.
+
 ## Ejemplo Clase:
 
 ```javascript
+const users = [
+  { userId: 1, username: "Tom", attributes: ["Nice", "Cute"] },
+  { userId: 2, username: "Mike", attributes: ["Lovely"] },
+  { userId: 3, username: "Nico", attributes: ["Nice", "Cool"] },
+];
 
+const rta = users.map((user) => user.attributes).flat();
+console.log("map-flat", rta);
+// return: map-flat [ 'Nice', 'Cute', 'Lovely', 'Nice', 'Cool' ]
+const rta2 = users.flatMap((user) => user.attributes);
+console.log("rta2", rta2);
+// return: rta2 [ 'Nice', 'Cute', 'Lovely', 'Nice', 'Cool' ]
+
+const calendars = {
+  primaryCalendar: [
+    {
+      startDate: new Date(2021, 1, 1, 15),
+      endDate: new Date(2021, 1, 1, 15, 30),
+      title: "Cita 1",
+    },
+    {
+      startDate: new Date(2021, 1, 1, 17),
+      endDate: new Date(2021, 1, 1, 18),
+      title: "Cita 2",
+    },
+  ],
+  secondaryCalendar: [
+    {
+      startDate: new Date(2021, 1, 1, 12),
+      endDate: new Date(2021, 1, 1, 12, 30),
+      title: "Cita 2",
+    },
+    {
+      startDate: new Date(2021, 1, 1, 9),
+      endDate: new Date(2021, 1, 1, 10),
+      title: "Cita 4",
+    },
+  ],
+};
+
+const rta3 = Object.values(calendars).flatMap((item) => {
+  return item.map((date) => date.startDate);
+});
+console.log(rta3);
+// returnL rta3 [
+//  2021-02-01T18:00:00.000Z,
+//  2021-02-01T20:00:00.000Z,
+//  2021-02-01T15:00:00.000Z,
+//  2021-02-01T12:00:00.000Z
+// ]
 ```
 
 > Links:
 >
-> - [Lectura recomendada: flatmap]()
+> - [Lectura recomendada: flatmap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap)
+
+# Mutable functions
+
+## Ejemplo Clase:
+
+```javascript
+const products = [
+  { title: "Pizza", price: 121, id: "🍕" },
+  { title: "Burger", price: 121, id: "🍔" },
+  { title: "Hot cakes", price: 121, id: "🥞" },
+];
+
+const myProducts = [];
+console.log("products", products);
+// return: products [
+//   { title: 'Pizza', price: 121, id: '🍕' },
+//   { title: 'Burger', price: 121, id: '🍔' },
+//   { title: 'Hot cakes', price: 121, id: '🥞' }
+// ]
+console.log("myProducts", myProducts);
+// return: myProducts []
+console.log("-".repeat(10));
+// return: - ----------
+
+// Ejemplo realizamos busqueda.
+const productIndex = products.findIndex((item) => item.id === "🍔");
+
+if (productIndex !== -1) {
+  myProducts.push(products[productIndex]); // metodo mutable
+  products.splice(productIndex, 1); // metodo mutable
+}
+console.log("products", products);
+// return: products [
+//   { title: 'Pizza', price: 121, id: '🍕' },
+//   { title: 'Hot cakes', price: 121, id: '🥞' }
+// ]
+console.log("myProducts", myProducts);
+// return: myProducts [ { title: 'Burger', price: 121, id: '🍔' } ]
+console.log("-".repeat(10));
+// return: - ----------
+
+// Ejemplo realizamos update.
+const productsV2 = [
+  { title: "Pizza", price: 121, id: "🍕" },
+  { title: "Burger", price: 121, id: "🍔" },
+  { title: "Hot cakes", price: 121, id: "🥞" },
+];
+
+const update = {
+  id: "🥞",
+  changes: {
+    price: 200,
+    description: "delicioso",
+  },
+};
+
+const productIndexV2 = productsV2.findIndex((item) => item.id === update.id);
+// > --- Metodo mutable ---
+// productsV2[productIndexV2] = update.changes
+// console.log(productsV2);
+// return: [
+//   { title: 'Pizza', price: 121, id: '🍕' },
+//   { title: 'Burger', price: 121, id: '🍔' },
+//   { price: 200, description: 'delicioso' }
+// ]
+
+// > --- Metodo inmutable ---
+productsV2[productIndexV2] = {
+  ...productsV2[productIndexV2],
+  ...update.changes,
+};
+console.log(productsV2);
+// return: [
+//   { title: 'Pizza', price: 121, id: '🍕' },
+//   { title: 'Burger', price: 121, id: '🍔' },
+//   {
+//     title: 'Hot cakes',
+//     price: 200,
+//     id: '🥞',
+//     description: 'delicioso'
+//   }
+// ]
+```
+
+> Links:
+>
+> - [Lectura recomendada: splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+> - [Lectura recomendada: push](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
+
+# Sort
+
+**Sort()** es un metodo mutable que sirve para ordenar
+
+## Ejemplo Clase:
+
+```javascript
+const months = ["March", "Jan", "Feb", "Dec"];
+months.sort();
+console.log(months);
+// return: [ 'Dec', 'Feb', 'Jan', 'March' ]
+
+const numbers = [1, 30, 4, 21, 100000];
+numbers.sort((a, b) => b - a);
+console.log(numbers);
+// return:  [ 100000, 30, 21, 4, 1 ]
+
+const words = [
+  "réservé",
+  "premier",
+  "communiqué",
+  "café",
+  "adieu",
+  "éclair",
+  "banana",
+];
+words.sort((a, b) => a.localeCompare(b));
+console.log(words);
+// return: [
+//   'adieu',
+//   'banana',
+//   'café',
+//   'communiqué',
+//   'éclair',
+//   'premier',
+//   'réservé'
+// ]
+
+const orders = [
+  {
+    customerName: "Nicolas",
+    total: 600,
+    delivered: true,
+  },
+  {
+    customerName: "Zulema",
+    total: 120,
+    delivered: false,
+  },
+  {
+    customerName: "Santiago",
+    total: 1840,
+    delivered: true,
+  },
+  {
+    customerName: "Valentina",
+    total: 240,
+    delivered: true,
+  },
+];
+orders.sort((a, b) => b.total - a.total);
+console.log(orders);
+// return: [
+//   { customerName: 'Santiago', total: 1840, delivered: true },
+//   { customerName: 'Nicolas', total: 600, delivered: true },
+//   { customerName: 'Valentina', total: 240, delivered: true },
+//   { customerName: 'Zulema', total: 120, delivered: false }
+// ]
+```
+
+> Links:
+>
+> - [Lectura recomendada: sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
