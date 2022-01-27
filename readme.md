@@ -1,5 +1,9 @@
 # Curso de Manipulación de Arrays en JavaScript
 
+## Mis Cursos en Platzi 👉 [Certificados](https://drive.google.com/drive/folders/1SNu_BcXoBeMUwQuw-CO2qc6QWhHWv_cL)
+
+## Clases:
+
 - Clase 1: [Tu AS bajo la manga](#Tu-AS-bajo-la-manga)
 - Clase 2: [ForEach](#ForEach)
 - Clase 3: [Mutable o Inmutable](#Mutable-o-Inmutable)
